@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
 const client = new MongoClient(process.env.Database_Password);
 
