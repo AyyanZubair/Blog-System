@@ -1,7 +1,7 @@
 const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
 
-const client = new MongoClient(process.env.Database_Password);
+const client = new MongoClient(process.env.Database_URL);
 
 async function createBlog(user_id, blogTitle, blogContent, likes, comments) {
     const db = client.db('blog_app');
