@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
 const { MongoClient } = require("mongodb");
 
-const client = new MongoClient("mongodb+srv://Ayan_Zubair:Alif-99@blogclustor.qupfyps.mongodb.net/");
+const client = new MongoClient(process.env.Database_Password);
 
 async function addCommentsToBlog(blogId, comment) {
     const db = client.db('blog_app');
