@@ -16,7 +16,8 @@ async function initializeCollections() {
 async function createUser(username, email, password) {
     const db = client.db('blog_app');
     const usersCollection = db.collection('users');
-    await usersCollection.insertOne(username, email, password);
+    const userRole = "ADMIN";
+    await usersCollection.insertOne({username, email, password,  userRole });
 }
 
 async function loginUser(email, password) {

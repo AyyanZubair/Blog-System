@@ -1,15 +1,25 @@
-const blogModel = require("../models/blog");
 const likesModel = require("../models/likes");
 const { parseIncomingBodyData } = require("../utils");
+const { getUser } = require("../service/auth");
 
 async function addLike(req, res) {
     try {
         const { blogId, userId } = await parseIncomingBodyData(req);
+        const authHeader = req.headers["authorization"];
+        if (!authHeader) {
+            res.writeHead(400).end("token not found");
+        }
+        const token = authHeader.split("Bearer ")[1];
+        const verify_Token = getUser(token);
         if (blogId && userId) {
-            const existingBlog = await likesModel.checkUserLikedTheBlog(blogId,userId);
+            const existingBlog = await likesModel.checkUserLikedTheBlog(blogId, userId);
             if (!existingBlog) {
-                await likesModel.addLikesToBlog(blogId, userId);
-                res.writeHead(200).end("Like added successfully");
+                if (verify_Token) {
+                    await likesModel.addLikesToBlog(blogId, userId);
+                    res.writeHead(200).end("Like added successfully");
+                } else {
+                    res.writeHead(400).end("invalid token! Like not added");
+                }
             } else {
                 res.writeHead(400).end("Already liked");
             }
@@ -23,9 +33,19 @@ async function addLike(req, res) {
 async function removeLike(req, res) {
     try {
         const { blogId, userId } = await parseIncomingBodyData(req);
+        const authHeader = req.headers["authorization"];
+        if (!authHeader) {
+            res.writeHead(400).end("token not found");
+        }
+        const token = authHeader.split("Bearer ")[1];
+        const verify_Token = getUser(token);
         if (blogId && userId) {
-            await likesModel.removeLikesFromBlog(blogId, userId);
-            res.writeHead(200).end("Like removed successfully");
+            if (verify_Token) {
+                await likesModel.removeLikesFromBlog(blogId, userId);
+                res.writeHead(200).end("Like removed successfully");
+            } else {
+                res.writeHead(400).end("invalid token! Like not removed");
+            }
         } else {
             res.writeHead(400).end("there is no like on the blog");
         }

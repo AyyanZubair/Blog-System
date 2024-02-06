@@ -1,5 +1,6 @@
 const { parseIncomingBodyData } = require("../utils");
 const userModel = require("../models/users");
+const { generateToken, getUser } = require("../service/auth");
 
 async function create_User(req, res) {
     try {
@@ -8,8 +9,9 @@ async function create_User(req, res) {
         if (existingUser) {
             res.writeHead(200).end("user already exist");
         } else if (username && email && password) {
-            await userModel.createUser({ username, email, password });
-            res.writeHead(201).end("user created successfully!");
+            await userModel.createUser(username, email, password);
+            const token = await generateToken({ email, password });
+            res.writeHead(201).end(`user created successfully!, your token is ${token}`);
         } else {
             res.writeHead(400).end("Please fill all requirements...");
         }
@@ -26,18 +28,25 @@ async function login_User(req, res) {
         if (email && password) {
             const userExist = await userModel.loginUser({ email, password });
             if (userExist) {
-                res.writeHead(200).end("you logged in successfully");
+                const authHeader = req.headers["authorization"];
+                const token = authHeader.split("Bearer ")[1];
+                if (!token) return res.writeHead(400).end("token not found");
+                const verify_Token = getUser(token);
+                if (verify_Token) {
+                    res.writeHead(200).end("token verified you logged in successfully")
+                } else {
+                    res.writeHead(400).end("invalid token");
+                }
             } else {
-                res.writeHead(400).end("account not exist... please signup first");
+                res.writeHead(400).end("account not exist! please signup first");
             }
-        } else {
-            res.writeHead(400).end("email & password is required");
         }
     } catch (error) {
-        console.log("error user created", error);
-        res.writeHead(500).end("Internal Server Error");
+        console.log("Error generating token", error);
+        res.writeHead(500).end(JSON.stringify({ error: "Internal Server Error" }));
     }
 }
+
 
 module.exports = {
     create_User, login_User

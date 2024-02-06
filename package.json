@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "bson": "^6.2.0",
+    "dotenv": "^16.4.1",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "memory-pager": "^1.5.0",
@@ -14,6 +15,7 @@
     "querystring": "^0.2.1",
     "sparse-bitfield": "^3.0.3",
     "tr46": "^4.1.1",
+    "uuid": "^9.0.1",
     "webidl-conversions": "^7.0.0",
     "whatwg-url": "^13.0.0"
   },
