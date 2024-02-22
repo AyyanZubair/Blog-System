@@ -1,5 +1,8 @@
 const querystring = require("querystring");
+<<<<<<< HEAD
 const formidable = require('formidable')
+=======
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
 
 function parseIncomingBodyData(req) {
     return new Promise((resolve, reject) => {
@@ -26,6 +29,7 @@ function parseIncomingBodyData(req) {
     });
 }
 
+<<<<<<< HEAD
 function parseFormData(req) {
     return new Promise((resolve, reject) => {
         const form = new formidable.IncomingForm();
@@ -44,4 +48,8 @@ function parseFormData(req) {
 
 module.exports = {
     parseIncomingBodyData, parseFormData
+=======
+module.exports = {
+    parseIncomingBodyData,
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
 };

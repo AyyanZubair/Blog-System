@@ -1,5 +1,6 @@
 const { ObjectId } = require("bson");
 const blogModel = require("../models/blog");
+<<<<<<< HEAD
 const { parseIncomingBodyData, parseFormData } = require("../utils");
 const { getUser } = require("../service/auth");
 const fs = require("fs");
@@ -74,6 +75,34 @@ async function createBlog(req, res) {
         console.error("Error creating blog:", error);
         res.writeHead(500);
         res.end("Internal server error");
+=======
+const { parseIncomingBodyData } = require("../utils");
+const { getUser } = require("../service/auth");
+
+async function createBlog(req, res) {
+    try {
+        const { user_id, blogTitle, blogContent, likes, comments } = await parseIncomingBodyData(req);
+        const authHeader = req.headers["authorization"];
+        if (!authHeader) {
+            res.writeHead(400).end("token not found");
+        }
+        const token = authHeader.split("Bearer ")[1];
+        const verify_Token = getUser(token);
+        if (blogTitle && blogContent) {
+            if (verify_Token) {
+                await blogModel.createBlog(user_id, blogTitle, blogContent, likes, comments);
+                res.writeHead(201).end("blog created successfully!");
+            } else {
+                res.writeHead(400).end("invalid token! Blog not created");
+            }
+
+        } else {
+            res.writeHead(400).end("Please give all requirments....");
+        }
+    } catch (error) {
+        console.log("error creating blog", error);
+        res.writeHead(500).end("Internal Server Error");
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
     }
 }
 
@@ -81,7 +110,11 @@ async function deleteBlog(req, res) {
     try {
         const urlParts = req.url.split("/");
         const blogId = urlParts[2];
+<<<<<<< HEAD
         const existingBlog = await blogModel.getBlogById(req, blogId);
+=======
+        const existingBlog = await blogModel.getBlogByTitle(blogId);
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
         const authHeader = req.headers["authorization"];
         if (!authHeader) {
             res.writeHead(400).end("token not found");
@@ -90,7 +123,11 @@ async function deleteBlog(req, res) {
         const verify_Token = getUser(token);
         if (existingBlog) {
             if (verify_Token) {
+<<<<<<< HEAD
                 await blogModel.deleteBlog(req, blogId);
+=======
+                await blogModel.deleteBlog(blogId);
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
                 res.writeHead(200).end("blog deleted successfully!");
             } else {
                 res.writeHead(400).end("invalid token! Blog not deleted");
@@ -109,7 +146,11 @@ async function updateBlog(req, res) {
         const urlParts = req.url.split("/");
         const blogId = urlParts[2];
         const { updatedTitle, updatedContent } = await parseIncomingBodyData(req);
+<<<<<<< HEAD
         const existingBlog = await blogModel.getBlogById(req, blogId);
+=======
+        const existingBlog = await blogModel.getBlogById(blogId);
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
         const authHeader = req.headers["authorization"];
         if (!authHeader) {
             res.writeHead(400).end("token not found");
@@ -119,7 +160,10 @@ async function updateBlog(req, res) {
         if (existingBlog) {
             if (verify_Token) {
                 await blogModel.updateBlog(
+<<<<<<< HEAD
                     req,
+=======
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
                     { _id: existingBlog._id },
                     { $set: { blogTitle: updatedTitle, blogContent: updatedContent } }
                 );
@@ -143,9 +187,17 @@ async function listBlog(req, res) {
             res.writeHead(400).end("token not found");
         }
         const token = authHeader.split("Bearer ")[1];
+<<<<<<< HEAD
         const verify_Token = await getUser(token);
         if (verify_Token && verify_Token.userRole === "ADMIN") {
             const blogs = await blogModel.findAllBlogs(req);
+=======
+        console.log("token", token);
+        const verify_Token = await getUser(token);
+        console.log("verify_Token", verify_Token);
+        if (verify_Token && verify_Token.userRole === "ADMIN") {
+            const blogs = await blogModel.findAllBlogs();
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
             res.writeHead(200).end(JSON.stringify({ blogs }));
         } else {
             res.writeHead(403).end("unAuthorized access");

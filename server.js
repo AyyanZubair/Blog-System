@@ -3,6 +3,7 @@ const users = require("./controllers/users");
 const blog = require("./controllers/blog");
 const likes = require("./controllers/likes");
 const comments = require("./controllers/comments");
+<<<<<<< HEAD
 const { connectToDatabase } = require("./configs/dbConnection.js");
 const url = require("url");
 
@@ -15,6 +16,13 @@ const httpServer = http.createServer(async (req, res) => {
     const urlParts = pathname.split("/");
     const resourse = urlParts[1];
     req.dbClient = client
+=======
+PORT = 3001;
+
+const httpServer = http.createServer(async (req, res) => {
+    const urlParts = req.url.split("/");
+    const resourse = urlParts[1];
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
     switch (resourse) {
         case "signup": {
             if (req.method === "POST") {
@@ -33,7 +41,11 @@ const httpServer = http.createServer(async (req, res) => {
         case "blogs": {
             if (req.method === "POST" && urlParts[2] === "like") {
                 likes.addLike(req, res);
+<<<<<<< HEAD
             } else if (req.method === "DELETE" && urlParts[2] === "dislike") {
+=======
+            } else if (req.method === "DELETE" && urlParts[2] === "like") {
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
                 likes.removeLike(req, res);
             } else if (req.method === "POST" && urlParts[2] === "getLikes") {
                 likes.totalLikes(req, res);
@@ -61,6 +73,7 @@ const httpServer = http.createServer(async (req, res) => {
     }
 })
 
+<<<<<<< HEAD
 connectToDatabase().then((mongoClient) => {
     client = mongoClient
     console.log(`db connected successfully!`);
@@ -69,3 +82,6 @@ connectToDatabase().then((mongoClient) => {
     console.log("error:", error);
 });
 
+=======
+httpServer.listen(PORT, () => console.log(`server started at port: ${PORT}`));
+>>>>>>> 28aa799d4f4ddc65b44b7a882585457894f93f84
